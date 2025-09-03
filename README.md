@@ -7,3 +7,6 @@ Contiene archivos simples para que puedas practicar creación de ramas, commits,
 ## Estructura
 - `src/app.js`: contiene un script básico.
 - `data/info.txt`: contiene datos de ejemplo.
+
+## Nueva funcionalidad
+Ver docs/feature-nueva.md para detalles.
