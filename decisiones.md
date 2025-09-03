@@ -1,5 +1,31 @@
 # decisiones.md — TP01 Git Básico
 
+### Qué flujo de trabajo usé y por qué
+Seguí un flujo basado en ramas muy parecido a **GitHub Flow**:
+- `main` siempre como rama estable (producción).
+- Ramas de feature (`feat/nueva-funcionalidad`) para desarrollar nuevas funcionalidades en aislamiento.
+- Ramas de hotfix (`hotfix/readme-errata`) para resolver errores urgentes detectados en `main`.
+- Integración mediante Pull Requests para mantener control y trazabilidad.
+
+Este enfoque lo elegí porque:
+- Mantiene la estabilidad de `main`.
+- Permite desarrollar sin riesgo de romper producción.
+- Asegura trazabilidad clara de qué cambios se hicieron, cómo y cuándo.
+
+### Cómo integré el fix
+- Simulé un bug en `main` (línea errónea en `README.md`).  
+- Lo corregí en una rama de hotfix (`hotfix/readme-errata`) y lo integré a `main` con un **merge explícito (`--no-ff`)**, dejando evidencia clara del fix en el historial.  
+- Para llevar el fix a la rama de desarrollo (`feat/nueva-funcionalidad`), usé **cherry-pick del commit del fix**, lo que me permitió aplicar solo ese cambio puntual sin traer otros commits.  
+- Esto resolvió el problema de forma controlada, aunque requirió resolver conflictos manuales en `README.md`.
+
+### Cómo aseguraría calidad y trazabilidad en un equipo real
+- **Convenciones de commits:** usé mensajes claros y atómicos (ej. `feat: ...`, `fix: ...`, `docs: ...`), lo que facilita entender cada cambio y revertir en caso necesario.  
+- **Ramas dedicadas:** cada tipo de tarea (feature, hotfix) en su propia rama asegura que `main` siempre esté estable.  
+- **Pull Requests:** permiten revisión por parte de otros miembros del equipo, discusión de cambios y registro histórico en GitHub.  
+- **Tags y versiones:** etiquetar versiones estables (ej. `v1.0`) permite anclar entregas y saber exactamente qué se liberó.  
+- **Pruebas automáticas y CI/CD (si fuera un proyecto real):** configuraría pipelines que ejecuten tests antes de aceptar un PR para prevenir errores en producción.  
+
+
 ## 1. Configurar entorno y preparar repositorio
 - **user.name**: Belén Treachi
 - **user.email**: belutreachi22@gmail.com
