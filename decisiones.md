@@ -101,7 +101,7 @@ git push
 - **A `feat/nueva-funcionalidad`: `cherry-pick` del commit del fix (`25787ec`)**  
   Elegí `cherry-pick` para **aplicar exactamente el mismo cambio** a la rama de desarrollo **sin traer otros commits** de `main`. Así mantengo aislado el trabajo de la feature y evito mezclar historia ajena.
 
----
+
 
 ### Resultado real del cherry-pick
 
@@ -109,17 +109,18 @@ git push
 - Tras resolver y `git add`, al continuar el cherry-pick, Git indicó que **el commit quedó vacío** (el fix ya estaba efectivamente aplicado). En ese caso, seguí la práctica recomendada: **`git cherry-pick --skip`**.  
 - Con esto, la feature quedó **sin el error** y **sin ruido extra** en su historia.
 
----
+
 
 ### Alternativas consideradas
 
 - **Merge de `main` → `feat/nueva-funcionalidad`:** válido cuando necesito más cambios de `main` además del fix, pero agrega commits que no eran necesarios para esta feature.  
 - **Rebase de la feature sobre `main`:** mantiene historia lineal pero **reescribe** commits, menos indicado si ya hay trabajo compartido/publicado.
 
----
+
 
 ### Conclusión
 
 - Para producción, **merge explícito** del hotfix a `main` mejora la auditoría.  
 - Para la rama de desarrollo, **cherry-pick del fix puntual** minimiza el ruido y mantiene la rama enfocada.
+
 
