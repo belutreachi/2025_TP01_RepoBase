@@ -51,3 +51,75 @@ git push -u origin feat/nueva-funcionalidad
 - Rama separada + PR → control de integración.
 - Commits atómicos + mensajes estándar → claridad histórica y mantenibilidad.
 - Documentación de la feature y referencia en README → mejora la experiencia de prueba/uso y la transferencia al equipo.
+
+## 3. Corrección de error (hotfix) e integración
+
+**Escenario simulado:** agregué intencionalmente una línea errónea en `main` para emular un fallo en producción y practicar un hotfix.
+
+**Ramas usadas:**
+- `main` (producción)
+- `hotfix/readme-errata` (corrección urgente)
+- `feat/nueva-funcionalidad` (desarrollo en curso)
+
+**Comandos ejecutados:**
+```bash
+# 1) Simular error en main
+git checkout main
+echo "\nERR: línea con error simulado" >> README.md
+git add README.md
+git commit -m "chore: simula error en main para práctica de hotfix"
+git push origin main
+```
+```bash
+# 2) Crear hotfix y arreglar
+git checkout -b hotfix/readme-errata
+# eliminar la línea de error
+sed -i.bak '/ERR: línea con error simulado/d' README.md && rm README.md.bak
+git add README.md
+git commit -m "fix(readme): elimina línea errónea simulada en main"   # SHA del fix: 25787ec
+```
+```bash
+# 3) Integrar el hotfix a main con merge explícito
+git checkout main
+git merge --no-ff hotfix/readme-errata -m "merge: integra hotfix de errata en README"
+git push origin main
+```
+```bash
+# 4) Propagar el fix a la rama de feature
+git checkout feat/nueva-funcionalidad
+git cherry-pick 25787ec     # puede resultar vacío si el cambio ya está
+# (si hay conflicto: editar archivo, git add <archivo>, git cherry-pick --continue)
+# (si queda vacío: git cherry-pick --skip)
+git push
+```
+
+### Elección de integración y explicación
+
+- **A `main`: `merge --no-ff`**  
+  Elegí `--no-ff` para **dejar un commit de merge explícito** que documenta el hotfix en el historial. Esto mejora la **trazabilidad** de incidentes críticos (se ve claro cuándo y por qué se aplicó un fix de producción).
+
+- **A `feat/nueva-funcionalidad`: `cherry-pick` del commit del fix (`25787ec`)**  
+  Elegí `cherry-pick` para **aplicar exactamente el mismo cambio** a la rama de desarrollo **sin traer otros commits** de `main`. Así mantengo aislado el trabajo de la feature y evito mezclar historia ajena.
+
+---
+
+### Resultado real del cherry-pick
+
+- Apareció un **conflicto en `README.md`** (porque la feature también modificaba ese archivo). Resolví dejando **mi sección nueva** y asegurando que **no quedara la línea `ERR: …`**.  
+- Tras resolver y `git add`, al continuar el cherry-pick, Git indicó que **el commit quedó vacío** (el fix ya estaba efectivamente aplicado). En ese caso, seguí la práctica recomendada: **`git cherry-pick --skip`**.  
+- Con esto, la feature quedó **sin el error** y **sin ruido extra** en su historia.
+
+---
+
+### Alternativas consideradas
+
+- **Merge de `main` → `feat/nueva-funcionalidad`:** válido cuando necesito más cambios de `main` además del fix, pero agrega commits que no eran necesarios para esta feature.  
+- **Rebase de la feature sobre `main`:** mantiene historia lineal pero **reescribe** commits, menos indicado si ya hay trabajo compartido/publicado.
+
+---
+
+### Conclusión
+
+- Para producción, **merge explícito** del hotfix a `main` mejora la auditoría.  
+- Para la rama de desarrollo, **cherry-pick del fix puntual** minimiza el ruido y mantiene la rama enfocada.
+
